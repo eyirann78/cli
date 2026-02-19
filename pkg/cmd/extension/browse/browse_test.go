@@ -34,7 +34,7 @@ func Test_getSelectedReadme(t *testing.T) {
 
 	rg := newReadmeGetter(client, time.Second)
 	opts := ExtBrowseOpts{
-		Rg: rg,
+		ReadmeGetter: rg,
 	}
 	readme := tview.NewTextView()
 	ui := uiRegistry{
@@ -143,7 +143,7 @@ func Test_getExtensionRepos(t *testing.T) {
 
 	opts := ExtBrowseOpts{
 		Searcher: searcher,
-		Em:       emMock,
+		ExtensionManager:       emMock,
 		Cfg:      cfg,
 	}
 
@@ -268,7 +268,7 @@ func Test_extEntry(t *testing.T) {
 func Test_extList(t *testing.T) {
 	opts := ExtBrowseOpts{
 		Logger: log.New(io.Discard, "", 0),
-		Em: &extensions.ExtensionManagerMock{
+		ExtensionManager: &extensions.ExtensionManagerMock{
 			InstallFunc: func(repo ghrepo.Interface, _ string) error {
 				assert.Equal(t, "cli/gh-cool", ghrepo.FullName(repo))
 				return nil

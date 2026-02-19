@@ -479,7 +479,7 @@ func NewCmdExtension(f *cmdutil.Factory) *cobra.Command {
 						IO:           io,
 						Browser:      browser,
 						Searcher:     searcher,
-						Em:           m,
+						ExtensionManager:           m,
 						Client:       client,
 						Cfg:          cfg,
 						Debug:        debug,

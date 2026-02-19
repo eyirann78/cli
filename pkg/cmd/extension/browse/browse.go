@@ -30,11 +30,11 @@ type ExtBrowseOpts struct {
 	Browser      ibrowser
 	IO           *iostreams.IOStreams
 	Searcher     search.Searcher
-	Em           extensions.ExtensionManager
+	ExtensionManager           extensions.ExtensionManager
 	Client       *http.Client
 	Logger       *log.Logger
 	Cfg          config.Config
-	Rg           *readmeGetter
+	ReadmeGetter           *readmeGetter
 	Debug        bool
 	SingleColumn bool
 }
@@ -163,7 +163,7 @@ func (el *extList) toggleSelected(verb string) {
 				el.opts.Logger.Println(fmt.Errorf("failed to install '%s': %w", ee.FullName, err))
 				return err
 			}
-			err = el.opts.Em.Install(repo, "")
+			err = el.opts.ExtensionManager.Install(repo, "")
 			if err != nil {
 				return fmt.Errorf("failed to install %s: %w", ee.FullName, err)
 			}
@@ -173,7 +173,7 @@ func (el *extList) toggleSelected(verb string) {
 		modal.SetText(fmt.Sprintf("Removing %s...", ee.FullName))
 		action = func() error {
 			name := strings.TrimPrefix(ee.Name, "gh-")
-			err := el.opts.Em.Remove(name)
+			err := el.opts.ExtensionManager.Remove(name)
 			if err != nil {
 				return fmt.Errorf("failed to remove %s: %w", ee.FullName, err)
 			}
@@ -305,7 +305,7 @@ func getSelectedReadme(opts ExtBrowseOpts, readme *tview.TextView, el *extList) 
 		return "", errors.New("failed to find selected entry")
 	}
 	fullName := ee.FullName
-	rm, err := opts.Rg.Get(fullName)
+	rm, err := opts.ReadmeGetter.Get(fullName)
 	if err != nil {
 		return "", err
 	}
@@ -330,7 +330,7 @@ func getSelectedReadme(opts ExtBrowseOpts, readme *tview.TextView, el *extList) 
 func getExtensions(opts ExtBrowseOpts) ([]extEntry, error) {
 	extEntries := []extEntry{}
 
-	installed := opts.Em.List()
+	installed := opts.ExtensionManager.List()
 
 	result, err := opts.Searcher.Repositories(search.Query{
 		Kind:  search.KindRepositories,
@@ -397,7 +397,7 @@ func ExtBrowse(opts ExtBrowseOpts) error {
 		return err
 	}
 
-	opts.Rg = newReadmeGetter(opts.Client, time.Hour*24)
+	opts.ReadmeGetter = newReadmeGetter(opts.Client, time.Hour*24)
 
 	app := tview.NewApplication()
 

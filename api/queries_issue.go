@@ -63,8 +63,8 @@ type Assignees struct {
 
 func (a Assignees) Logins() []string {
 	logins := make([]string, len(a.Nodes))
-	for i, a := range a.Nodes {
-		logins[i] = a.Login
+	for i, assignee := range a.Nodes {
+		logins[i] = assignee.Login
 	}
 	return logins
 }
