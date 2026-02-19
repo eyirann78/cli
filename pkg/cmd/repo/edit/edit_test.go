@@ -30,7 +30,7 @@ func TestNewCmdEdit(t *testing.T) {
 			wantOpts: EditOptions{
 				Repository: ghrepo.NewWithHost("OWNER", "REPO", "github.com"),
 				Edits: EditRepositoryInput{
-					Description: sp("hello"),
+					Description: stringPtr("hello"),
 				},
 			},
 		},
@@ -94,8 +94,8 @@ func Test_editRun(t *testing.T) {
 			opts: EditOptions{
 				Repository: ghrepo.NewWithHost("OWNER", "REPO", "github.com"),
 				Edits: EditRepositoryInput{
-					Homepage:    sp("newURL"),
-					Description: sp("hello world!"),
+					Homepage:    stringPtr("newURL"),
+					Description: stringPtr("hello world!"),
 				},
 			},
 			httpStubs: func(t *testing.T, r *httpmock.Registry) {
@@ -132,7 +132,7 @@ func Test_editRun(t *testing.T) {
 			opts: EditOptions{
 				Repository: ghrepo.NewWithHost("OWNER", "REPO", "github.com"),
 				Edits: EditRepositoryInput{
-					AllowUpdateBranch: bp(true),
+					AllowUpdateBranch: boolPtr(true),
 				},
 			},
 			httpStubs: func(t *testing.T, r *httpmock.Registry) {
@@ -516,10 +516,10 @@ func Test_editRun_interactive(t *testing.T) {
 	}
 }
 
-func sp(v string) *string {
+func stringPtr(v string) *string {
 	return &v
 }
 
-func bp(b bool) *bool {
+func boolPtr(b bool) *bool {
 	return &b
 }

@@ -251,9 +251,9 @@ func colorDiffLines(w io.Writer, r io.Reader) error {
 var diffHeaderPrefixes = []string{"+++", "---", "diff", "index"}
 
 func isHeaderLine(l []byte) bool {
-	dl := string(l)
+	diffLine := string(l)
 	for _, p := range diffHeaderPrefixes {
-		if strings.HasPrefix(dl, p) {
+		if strings.HasPrefix(diffLine, p) {
 			return true
 		}
 	}

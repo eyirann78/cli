@@ -242,11 +242,11 @@ func (s *StatusGetter) ActualMention(commentURL string) (string, error) {
 	// long cache period since once a comment is looked up, it never needs to be
 	// consulted again.
 	cachedClient := s.CachedClient(time.Hour * 24 * 30)
-	c := api.NewClientFromHTTP(cachedClient)
+	apiClient := api.NewClientFromHTTP(cachedClient)
 	resp := struct {
 		Body string
 	}{}
-	if err := c.REST(s.hostname(), "GET", commentURL, nil, &resp); err != nil {
+	if err := apiClient.REST(s.hostname(), "GET", commentURL, nil, &resp); err != nil {
 		return "", err
 	}
 
