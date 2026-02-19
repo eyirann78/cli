@@ -197,15 +197,15 @@ func creditsRun(opts *CreditsOptions) error {
 
 	margin := termWidth / 3
 
-	starLinesLeft := []string{}
+	starLinesLeft := make([]string, len(lines))
 	for x := 0; x < len(lines); x++ {
-		starLinesLeft = append(starLinesLeft, starLine(r, margin))
+		starLinesLeft[x] = starLine(r, margin)
 	}
 
-	starLinesRight := []string{}
+	starLinesRight := make([]string, len(lines))
 	for x := 0; x < len(lines); x++ {
 		lineWidth := termWidth - (margin + len(lines[x]))
-		starLinesRight = append(starLinesRight, starLine(r, lineWidth))
+		starLinesRight[x] = starLine(r, lineWidth)
 	}
 
 	loop := true
@@ -246,7 +246,8 @@ func creditsRun(opts *CreditsOptions) error {
 }
 
 func starLine(r *rand.Rand, width int) string {
-	line := ""
+	var line strings.Builder
+	line.Grow(width) // Pre-allocate memory for the entire line
 	starChance := 0.1
 	for y := 0; y < width; y++ {
 		chance := r.Float64()
@@ -254,27 +255,36 @@ func starLine(r *rand.Rand, width int) string {
 			charRoll := r.Float64()
 			switch {
 			case charRoll < 0.3:
-				line += "."
+				line.WriteString(".")
 			case charRoll > 0.3 && charRoll < 0.6:
-				line += "+"
+				line.WriteString("+")
 			default:
-				line += "*"
+				line.WriteString("*")
 			}
 		} else {
-			line += " "
+			line.WriteString(" ")
 		}
 	}
 
-	return line
+	return line.String()
 }
 
 func twinkle(starLine string) string {
-	starLine = strings.ReplaceAll(starLine, ".", "P")
-	starLine = strings.ReplaceAll(starLine, "+", "A")
-	starLine = strings.ReplaceAll(starLine, "*", ".")
-	starLine = strings.ReplaceAll(starLine, "P", "+")
-	starLine = strings.ReplaceAll(starLine, "A", "*")
-	return starLine
+	var result strings.Builder
+	result.Grow(len(starLine)) // Pre-allocate for same size
+	for _, char := range starLine {
+		switch char {
+		case '.':
+			result.WriteRune('+')
+		case '+':
+			result.WriteRune('*')
+		case '*':
+			result.WriteRune('.')
+		default:
+			result.WriteRune(char)
+		}
+	}
+	return result.String()
 }
 
 func getColor(x int) string {

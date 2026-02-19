@@ -558,15 +558,22 @@ func isEqualSet(a, b []string) bool {
 		return false
 	}
 
-	aCopy := make([]string, len(a))
-	copy(aCopy, a)
-	bCopy := make([]string, len(b))
-	copy(bCopy, b)
-	sort.Strings(aCopy)
-	sort.Strings(bCopy)
-
-	for i := range aCopy {
-		if aCopy[i] != bCopy[i] {
+	// Use map for O(n) comparison instead of O(n log n) sorting.
+	// Pre-allocate with len(a) capacity for optimal performance when elements are unique.
+	// If there are duplicates, we may over-allocate slightly, but this is acceptable
+	// given the typical use case (comparing field names) where duplicates are rare.
+	seen := make(map[string]int, len(a))
+	for _, s := range a {
+		seen[s]++
+	}
+	for _, s := range b {
+		seen[s]--
+		if seen[s] < 0 {
+			return false
+		}
+	}
+	for _, count := range seen {
+		if count != 0 {
 			return false
 		}
 	}
