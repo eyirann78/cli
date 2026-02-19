@@ -10,7 +10,7 @@ import (
 func BenchmarkStarLine(b *testing.B) {
 	r := rand.New(rand.NewSource(42))
 	widths := []int{50, 100, 200}
-	
+
 	for _, width := range widths {
 		b.Run(fmt.Sprintf("width_%d", width), func(b *testing.B) {
 			b.ResetTimer()
@@ -25,7 +25,7 @@ func BenchmarkStarLine(b *testing.B) {
 func BenchmarkTwinkle(b *testing.B) {
 	r := rand.New(rand.NewSource(42))
 	testLine := starLine(r, 100)
-	
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		twinkle(testLine)
@@ -36,7 +36,7 @@ func BenchmarkTwinkle(b *testing.B) {
 func TestStarLine(t *testing.T) {
 	r := rand.New(rand.NewSource(42))
 	widths := []int{0, 1, 10, 50, 100}
-	
+
 	for _, width := range widths {
 		result := starLine(r, width)
 		if len(result) != width {
@@ -59,7 +59,7 @@ func TestTwinkle(t *testing.T) {
 		{"..++**", "++**.."},
 		{" . + * ", " + * . "},
 	}
-	
+
 	for _, tt := range tests {
 		result := twinkle(tt.input)
 		if result != tt.expected {
