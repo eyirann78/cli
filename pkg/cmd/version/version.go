@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var versionRE = regexp.MustCompile(`^v?\d+\.\d+\.\d+(-[\w.]+)?$`)
+
 func NewCmdVersion(f *cmdutil.Factory, version, buildDate string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:    "version",
@@ -36,8 +38,7 @@ func Format(version, buildDate string) string {
 
 func changelogURL(version string) string {
 	path := "https://github.com/cli/cli"
-	r := regexp.MustCompile(`^v?\d+\.\d+\.\d+(-[\w.]+)?$`)
-	if !r.MatchString(version) {
+	if !versionRE.MatchString(version) {
 		return fmt.Sprintf("%s/releases/latest", path)
 	}
 

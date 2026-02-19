@@ -184,12 +184,13 @@ func statusRun(opts *StatusOptions) error {
 	return nil
 }
 
+var prHeadRE = regexp.MustCompile(`^refs/pull/(\d+)/head$`)
+
 func prSelectorForCurrentBranch(gitClient *git.Client, baseRepo ghrepo.Interface, prHeadRef string, rem ghContext.Remotes) (prNumber int, selector string, err error) {
 	selector = prHeadRef
 	branchConfig := gitClient.ReadBranchConfig(context.Background(), prHeadRef)
 
 	// the branch is configured to merge a special PR head ref
-	prHeadRE := regexp.MustCompile(`^refs/pull/(\d+)/head$`)
 	if m := prHeadRE.FindStringSubmatch(branchConfig.MergeRef); m != nil {
 		prNumber, _ = strconv.Atoi(m[1])
 		return
