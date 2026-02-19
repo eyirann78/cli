@@ -520,3 +520,101 @@ func TestFind(t *testing.T) {
 		})
 	}
 }
+
+// Test for isEqualSet function
+func TestIsEqualSet(t *testing.T) {
+tests := []struct {
+name     string
+a        []string
+b        []string
+expected bool
+}{
+{
+name:     "empty sets",
+a:        []string{},
+b:        []string{},
+expected: true,
+},
+{
+name:     "equal sets same order",
+a:        []string{"a", "b", "c"},
+b:        []string{"a", "b", "c"},
+expected: true,
+},
+{
+name:     "equal sets different order",
+a:        []string{"a", "b", "c"},
+b:        []string{"c", "a", "b"},
+expected: true,
+},
+{
+name:     "different sets same size",
+a:        []string{"a", "b", "c"},
+b:        []string{"a", "b", "d"},
+expected: false,
+},
+{
+name:     "different sizes",
+a:        []string{"a", "b"},
+b:        []string{"a", "b", "c"},
+expected: false,
+},
+{
+name:     "duplicate elements same count",
+a:        []string{"a", "a", "b"},
+b:        []string{"a", "b", "a"},
+expected: true,
+},
+{
+name:     "duplicate elements different count",
+a:        []string{"a", "a", "b"},
+b:        []string{"a", "b", "b"},
+expected: false,
+},
+}
+
+for _, tt := range tests {
+t.Run(tt.name, func(t *testing.T) {
+result := isEqualSet(tt.a, tt.b)
+if result != tt.expected {
+t.Errorf("isEqualSet(%v, %v) = %v, want %v", tt.a, tt.b, result, tt.expected)
+}
+})
+}
+}
+
+// Benchmark for isEqualSet function
+func BenchmarkIsEqualSet(b *testing.B) {
+sizes := []int{10, 50, 100, 500}
+
+for _, size := range sizes {
+// Create test slices
+a := make([]string, size)
+bSame := make([]string, size)
+bDiff := make([]string, size)
+
+for i := 0; i < size; i++ {
+a[i] = string(rune('a' + (i % 26)))
+bSame[size-1-i] = string(rune('a' + (i % 26))) // same elements, reverse order
+if i < size-1 {
+bDiff[i] = string(rune('a' + (i % 26)))
+} else {
+bDiff[i] = "different" // one different element
+}
+}
+
+b.Run("equal_size_"+string(rune(size)), func(b *testing.B) {
+b.ResetTimer()
+for i := 0; i < b.N; i++ {
+isEqualSet(a, bSame)
+}
+})
+
+b.Run("not_equal_size_"+string(rune(size)), func(b *testing.B) {
+b.ResetTimer()
+for i := 0; i < b.N; i++ {
+isEqualSet(a, bDiff)
+}
+})
+}
+}
