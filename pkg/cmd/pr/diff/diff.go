@@ -268,14 +268,15 @@ func isRemovalLine(l []byte) bool {
 	return len(l) > 0 && l[0] == '-'
 }
 
+var diffNameRE = regexp.MustCompile(`(?:^|\n)diff\s--git.*\sb/(.*)`)
+
 func changedFilesNames(w io.Writer, r io.Reader) error {
 	diff, err := io.ReadAll(r)
 	if err != nil {
 		return err
 	}
 
-	pattern := regexp.MustCompile(`(?:^|\n)diff\s--git.*\sb/(.*)`)
-	matches := pattern.FindAllStringSubmatch(string(diff), -1)
+	matches := diffNameRE.FindAllStringSubmatch(string(diff), -1)
 
 	for _, val := range matches {
 		name := strings.TrimSpace(val[1])

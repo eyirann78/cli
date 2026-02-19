@@ -226,13 +226,13 @@ func processFiles(stdin io.ReadCloser, filenameOverride string, filenames []stri
 	return fs, nil
 }
 
+var gistfileRE = regexp.MustCompile(`^gistfile\d+\.txt$`)
+
 func guessGistName(files map[string]*shared.GistFile) string {
 	filenames := make([]string, 0, len(files))
 	gistName := ""
-
-	re := regexp.MustCompile(`^gistfile\d+\.txt$`)
 	for k := range files {
-		if !re.MatchString(k) {
+		if !gistfileRE.MatchString(k) {
 			filenames = append(filenames, k)
 		}
 	}

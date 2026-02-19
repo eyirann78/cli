@@ -16,6 +16,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	sanitizeSpecialCharsRE = regexp.MustCompile(`(?i)[^a-z0-9\-_\+@]+`)
+	sanitizeMultiDotsRE    = regexp.MustCompile(`\.{2,}`)
+)
+
 type UploadOptions struct {
 	HttpClient func() (*http.Client, error)
 	IO         *iostreams.IOStreams
@@ -136,10 +141,10 @@ func sanitizeFileName(name string) string {
 	}
 
 	// Replace special characters with the separator
-	value = regexp.MustCompile(`(?i)[^a-z0-9\-_\+@]+`).ReplaceAllLiteralString(value, ".")
+	value = sanitizeSpecialCharsRE.ReplaceAllLiteralString(value, ".")
 
 	// No more than one of the separator in a row.
-	value = regexp.MustCompile(`\.{2,}`).ReplaceAllLiteralString(value, ".")
+	value = sanitizeMultiDotsRE.ReplaceAllLiteralString(value, ".")
 
 	// Remove leading/trailing separator.
 	value = strings.Trim(value, ".")
