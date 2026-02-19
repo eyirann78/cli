@@ -1,6 +1,7 @@
 package credits
 
 import (
+	"fmt"
 	"math/rand"
 	"testing"
 )
@@ -11,7 +12,7 @@ func BenchmarkStarLine(b *testing.B) {
 	widths := []int{50, 100, 200}
 	
 	for _, width := range widths {
-		b.Run(string(rune(width)), func(b *testing.B) {
+		b.Run(fmt.Sprintf("width_%d", width), func(b *testing.B) {
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
 				starLine(r, width)

@@ -2,6 +2,7 @@ package shared
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"testing"
@@ -603,14 +604,14 @@ bDiff[i] = "different" // one different element
 }
 }
 
-b.Run("equal_size_"+string(rune(size)), func(b *testing.B) {
+b.Run(fmt.Sprintf("equal_size_%d", size), func(b *testing.B) {
 b.ResetTimer()
 for i := 0; i < b.N; i++ {
 isEqualSet(a, bSame)
 }
 })
 
-b.Run("not_equal_size_"+string(rune(size)), func(b *testing.B) {
+b.Run(fmt.Sprintf("not_equal_size_%d", size), func(b *testing.B) {
 b.ResetTimer()
 for i := 0; i < b.N; i++ {
 isEqualSet(a, bDiff)
